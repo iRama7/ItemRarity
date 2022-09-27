@@ -1,0 +1,13 @@
+name: ItemRarity
+version: '${project.version}'
+main: rama.ir.ItemRarity
+api-version: 1.13
+depend: [ NBTAPI ]
+authors: [ ImRama ]
+description: Adds rarity to your items.
+commands:
+  ir:
+    description: ItemRarity main command
+    aliases: [ itemrarity ]
+    permission: ir.admin
+    permission-message: "&cYou don't have permission to use this command."

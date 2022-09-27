@@ -1,0 +1,6 @@
+Config:
+  debug-mode: false
+  lore-format:
+    - "{item-lore}"
+    - ""
+    - "&7Rarity: {rarity-prefix}"

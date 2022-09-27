@@ -1,0 +1,57 @@
+Rarities:
+    1:
+      Name: Common
+      Prefix: '&f&lCOMMON' # #FFFFFF for hex color codes
+    2:
+      Name: Uncommon
+      Prefix: '&a&lUNCOMMON'
+    3:
+      Name: Rare
+      Prefix: '&9&lRARE'
+    4:
+      Name: Epic
+      Prefix: '&5&lEPIC'
+    5:
+      Name: Legendary
+      Prefix: '&6&lLEGENDARY'
+Items:
+  Common:
+    priority: 3 #Lowest overrides
+    list:
+    - 'DEFAULT' #This would add all items to the Common rarity if they don't have a rarity set below
+  Uncommon:
+    priority: 2
+    list:
+    - 'DIAMOND'
+    - 'IRON_INGOT'
+    - 'GOLD_INGOT'
+  Rare:
+    priority: 1
+    list:
+      - 'GOLD_INGOT'
+  Other: #These have more priority than the above ones
+    1:
+      Name: '&f&lCommon &7&lSword'
+      Material: DIAMOND_SWORD
+      Lore: "This is a common sword" #just one lore line of the item
+      Rarity: Common
+    2:
+      Name: '&a&lUncommon &7&lSword'
+      Material: DIAMOND_SWORD
+      Lore: "This is an uncommon sword"
+      Rarity: Uncommon
+    3:
+      Name: '&9&lRare &7&lSword'
+      Material: DIAMOND_SWORD
+      Lore: "This is a rare sword"
+      Rarity: Rare
+    4:
+      Name: '&5&lEpic &7&lSword'
+      Material: DIAMOND_SWORD
+      Lore: "This is an epic sword"
+      Rarity: Epic
+    5:
+      Name: '&6&lLegendary &7&lSword'
+      Material: DIAMOND_SWORD
+      Lore: "This is a legendary sword"
+      Rarity: Legendary
