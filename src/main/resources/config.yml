@@ -4,3 +4,4 @@ Config:
     - "{item-lore}"
     - ""
     - "&7Rarity: {rarity-prefix}"
+  enable-glow: true

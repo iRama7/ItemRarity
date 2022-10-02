@@ -24,6 +24,7 @@ public class ItemCreationListener implements Listener {
     public void itemSpawnEvent(ItemSpawnEvent e) {
         RarityMain rarityMain = new RarityMain(plugin);
         rarityMain.getRarity(e.getEntity().getItemStack());
+
     }
 
     @EventHandler

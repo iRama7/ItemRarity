@@ -2,18 +2,23 @@ Rarities:
     1:
       Name: Common
       Prefix: '&f&lCOMMON' # #FFFFFF for hex color codes
+      Glow-color: 'WHITE'
     2:
       Name: Uncommon
       Prefix: '&a&lUNCOMMON'
+      Glow-color: 'GREEN'
     3:
       Name: Rare
       Prefix: '&9&lRARE'
+      Glow-color: 'AQUA'
     4:
       Name: Epic
       Prefix: '&5&lEPIC'
+      Glow-color: 'DARK_PURPLE'
     5:
       Name: Legendary
       Prefix: '&6&lLEGENDARY'
+      Glow-color: 'GOLD'
 Items:
   Common:
     priority: 3 #Lowest overrides

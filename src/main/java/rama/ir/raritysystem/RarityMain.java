@@ -4,7 +4,6 @@ import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import rama.ir.ItemRarity;
@@ -30,6 +29,14 @@ public class RarityMain {
         nbti.setString("Rarity", rarity);
         if(custom){
             nbti.setString("CustomItem", "true");
+        }
+        if(plugin.getConfig().getBoolean("Config.enable-glow")){
+            for(String rarity_integer : plugin.getRarityFile().getConfigurationSection("Rarities").getKeys(false)){
+                if(plugin.getRarityFile().getString("Rarities." + rarity_integer + ".Name").equals(rarity)){
+                    String glowColor = plugin.getRarityFile().getString("Rarities." + rarity_integer + ".Glow-color");
+                    nbti.setString("Glow", glowColor);
+                }
+            }
         }
         FileConfiguration rarityFile = plugin.getRarityFile();
         ItemMeta meta = nbti.getItem().getItemMeta();
@@ -58,7 +65,7 @@ public class RarityMain {
         i.setItemMeta(meta);
     }
 
-    public void getRarity(ItemStack is){
+    public String getRarity(ItemStack is){
         FileConfiguration rarityFile = plugin.getRarityFile();
         ItemMeta meta = is.getItemMeta();
         if(meta.hasDisplayName() || meta.hasLore()){ //Joining the Other case
@@ -70,6 +77,7 @@ public class RarityMain {
                     if(meta.getDisplayName().equals(raritiesName) && meta.getLore().contains(raritiesLore) && is.getType().equals(raritiesMaterial)){
                         String rarity = rarityFile.getString("Items.Other." + i + ".Rarity");
                         addRarity(is, rarity, true);
+                        return rarity;
                     }
                 }
             }else if(meta.hasDisplayName()){
@@ -79,6 +87,7 @@ public class RarityMain {
                     if(meta.getDisplayName().equals(raritiesName) && is.getType().equals(raritiesMaterial)){
                         String rarity = rarityFile.getString("Items.Other." + i + ".Rarity");
                         addRarity(is, rarity, true);
+                        return rarity;
                     }
                 }
             }else if(meta.hasLore()){
@@ -88,6 +97,7 @@ public class RarityMain {
                     if(meta.getLore().contains(raritiesLore) && is.getType().equals(raritiesMaterial)){
                         String rarity = rarityFile.getString("Items.Other." + i + ".Rarity");
                         addRarity(is, rarity, true);
+                        return rarity;
                     }
                 }
             }
@@ -131,7 +141,9 @@ public class RarityMain {
                 if(plugin.getConfig().getBoolean("Config.debug-mode")) {
                     plugin.getLogger().warning("[IR-DEBUG] Adding " + mostPriorityRarity + " rarity to " + is.getType().toString() + " item.");
                 }
+                return mostPriorityRarity;
             }
+            return null;
         }
 
     public static String hex(String message) {
