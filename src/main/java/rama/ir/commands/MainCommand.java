@@ -68,15 +68,23 @@ public class MainCommand implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         List<String> commands = new ArrayList<>();
-        if(args.length == 1){
-            if(sender.hasPermission("ir.admin")){
+        if (sender.hasPermission("ir.admin")) {
+            if (args.length == 1) {
                 commands.add("reload");
                 commands.add("update <all|player name>");
                 StringUtil.copyPartialMatches(args[0], commands, completions);
+                Bukkit.getLogger().info(args[0]);
+            } else if (args.length == 2) {
+                if (args[0].equals("update")) {
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        commands.add(p.getName());
+                        commands.add("all");
+                        StringUtil.copyPartialMatches(args[1], commands, completions);
+                    }
+                }
             }
+        }
             Collections.sort(completions);
             return completions;
-        }
-        return completions;
     }
 }

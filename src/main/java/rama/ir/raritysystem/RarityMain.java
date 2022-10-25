@@ -53,6 +53,9 @@ public class RarityMain {
                         rarity = rarity_integer;
                     }
                 }
+                if(rarity == null){
+                    continue;
+                }
                 lore.add(line.replace("{rarity-prefix}", rarityFile.getString("Rarities." + rarity + ".Prefix")));
             }else{
                 lore.add(line);
@@ -116,6 +119,9 @@ public class RarityMain {
                 String mostPriorityRarity = null;
                 int previousPriority = 0;
                 int current_priority;
+                if(valid_rarities.size() == 0){
+                    return null;
+                }
                 if(valid_rarities.size() == 1){
                     mostPriorityRarity = valid_rarities.get(0);
                 }else {

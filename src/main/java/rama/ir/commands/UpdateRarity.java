@@ -24,15 +24,86 @@ public class UpdateRarity {
         FileConfiguration rarityFile = plugin.getRarityFile();
         if (all) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                removeRarity(rarityFile, player);
+                for(ItemStack i : player.getInventory().getContents()){
+                    if(i != null){
+                        extractLore(i);
+                        removeNBTTags(i);
+                    }
+                }
             }
         }
         if (!all) {
-            removeRarity(rarityFile, p);
+            for(ItemStack i : p.getInventory().getContents()){
+                if(i != null){
+                    extractLore(i);
+                    removeNBTTags(i);
+                }
+            }
         }
     }
 
-    private void removeRarity(FileConfiguration rarityFile, Player player) {
+    public List<String> loreToRemove(ItemStack i) {
+        String rarity = null;
+        NBTItem nbtItem = new NBTItem(i);
+        if (nbtItem.hasKey("Rarity")) {
+            rarity = nbtItem.getString("Rarity");
+        }
+        FileConfiguration rarityFile = plugin.getRarityFile();
+        List<String> lore_format = plugin.getConfig().getStringList("Config.lore-format");
+        List<String> loreToRemove = new ArrayList<>();
+        for (String line : lore_format) {
+            if (line.equals("{item-lore}")) {
+                continue;
+            }
+            if (line.contains("{rarity-prefix}")) {
+                for (String rarity_integer : rarityFile.getConfigurationSection("Rarities").getKeys(false)) {
+                    if (rarityFile.getString("Rarities." + rarity_integer + ".Name").equals(rarity)) {
+                        rarity = rarity_integer;
+                    }
+                }
+                String rarityPrefix = rarityFile.getString("Rarities." + rarity + ".Prefix");
+                if (rarityPrefix != null) {
+                    loreToRemove.add(ChatColor.translateAlternateColorCodes('&', line.replace("{rarity-prefix}", rarityPrefix)));
+                }
+            } else {
+                loreToRemove.add(line);
+            }
+        }
+        if(plugin.getConfig().getBoolean("debug-mode")) {
+            Bukkit.broadcastMessage("LORE TO REMOVE");
+            Bukkit.broadcastMessage("---------------");
+            for (String line : loreToRemove) {
+                Bukkit.broadcastMessage(line);
+            }
+            Bukkit.broadcastMessage("---------------");
+        }
+        return loreToRemove;
+    }
+
+    public void extractLore(ItemStack i) {
+        if (i.getItemMeta().hasLore()) {
+            List<String> item_lore = i.getItemMeta().getLore();
+            item_lore.removeAll(loreToRemove(i));
+            ItemMeta item_meta = i.getItemMeta();
+            item_meta.setLore(item_lore);
+            i.setItemMeta(item_meta);
+        }
+    }
+
+    public void removeNBTTags(ItemStack i){
+        NBTItem nbtItem = new NBTItem(i);
+        if (nbtItem.hasKey("Rarity")) {
+            nbtItem.removeKey("Rarity");
+            i.setItemMeta(nbtItem.getItem().getItemMeta());
+        }
+        if (nbtItem.hasKey("CustomItem")) {
+            nbtItem.removeKey("CustomItem");
+            i.setItemMeta(nbtItem.getItem().getItemMeta());
+        }
+    }
+}
+
+    /*private void removeRarity(FileConfiguration rarityFile, Player player) {
         String rarity = null;
         for (ItemStack i : player.getInventory().getContents()) {
             if (i != null) {
@@ -66,13 +137,14 @@ public class UpdateRarity {
                         }
                     }
                 }
-                List<String> itemLore = i.getItemMeta().getLore();
-                itemLore.removeAll(loreToRemove);
-                ItemMeta im = i.getItemMeta();
-                im.setLore(itemLore);
-                i.setItemMeta(im);
+                if(i.getItemMeta().getLore() != null) {
+                    List<String> itemLore = i.getItemMeta().getLore();
+                    itemLore.removeAll(loreToRemove);
+                    ItemMeta im = i.getItemMeta();
+                    im.setLore(itemLore);
+                    i.setItemMeta(im);
+                }
             }
         }
 
-    }
-}
+    */

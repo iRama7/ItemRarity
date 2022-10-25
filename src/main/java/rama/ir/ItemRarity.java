@@ -1,5 +1,6 @@
 package rama.ir;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,6 +26,15 @@ public final class ItemRarity extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new UpdateChecker(this, 105483).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                logger("&eYou are using the latest version.");
+            } else {
+                logger("&eThere is a new update available!");
+                logger("&eYour current version: "+"&c"+this.getDescription().getVersion());
+                logger("&eLatest version: "+"&a"+version);
+            }
+        });
         createRarityFile();
         registerEvents();
         loadRarities();
