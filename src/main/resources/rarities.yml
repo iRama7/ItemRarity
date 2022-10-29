@@ -29,7 +29,8 @@ Items:
     list:
     - 'DIAMOND'
     - 'IRON_INGOT'
-    - 'GOLD_INGOT'
+    - 'GOLD_INGOT:12345' #MATERIAL:Custom Model Data
+    - 'ENCHANTED_BOOK:efficiency 5'
   Rare:
     priority: 1
     list:

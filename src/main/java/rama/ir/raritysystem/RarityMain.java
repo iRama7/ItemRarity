@@ -4,7 +4,10 @@ import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import rama.ir.ItemRarity;
 
@@ -12,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.bukkit.Material.ENCHANTED_BOOK;
+
 
 public class RarityMain {
 
@@ -110,6 +116,35 @@ public class RarityMain {
                 if (rarity.equals("Other")) continue;
 
                 List<String> materials = rarityFile.getStringList("Items." + rarity + ".list");
+                //search for custom model data
+                for(String m : materials){
+                    if(m.contains(":") && !m.contains("ENCHANTED_BOOK")){
+                        String[] parts = m.split(":");
+                        String material_name = parts[0];
+                        int custom_model_data = Integer.parseInt(parts[1]);
+                        NBTItem nbtItem = new NBTItem(is);
+                        if(is.getType().toString().equals(material_name) && nbtItem.getInteger("CustomModelData") == custom_model_data){
+                            valid_rarities.add(rarity);
+                        }
+                    }
+                }
+                //search for enchanted_book
+                for(String m : materials){
+                    if(m.contains("ENCHANTED_BOOK")){
+                        String[] parts1 = m.split("ENCHANTED_BOOK:");
+                        String Enchantment_string = parts1[1];
+                        String[] parts2 = Enchantment_string.split(" ");
+                        String Enchantment_name = parts2[0];
+                        int Enchantment_level = Integer.parseInt(parts2[1]);
+                        org.bukkit.enchantments.Enchantment Bukkit_Ench = new EnchantmentWrapper(Enchantment_name);
+                        if(is.getType().equals(ENCHANTED_BOOK)){
+                            EnchantmentStorageMeta im = (EnchantmentStorageMeta) is.getItemMeta();
+                            if(im.getStoredEnchants().containsKey(Bukkit_Ench) && im.getStoredEnchantLevel(Bukkit_Ench) == Enchantment_level){
+                                valid_rarities.add(rarity);
+                            }
+                        }
+                    }
+                }
                 if (materials.contains(is.getType().toString()) || materials.contains("DEFAULT")) { //create a list with valid rarities for the item
                     valid_rarities.add(rarity);
                 }
