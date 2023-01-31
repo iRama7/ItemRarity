@@ -35,6 +35,7 @@ Items:
     priority: 1
     list:
       - 'GOLD_INGOT'
+      - 'POTION:invisibility true:false' #POTION:(effect_name) (extended:upgraded)
   Other: #These have more priority than the above ones
     1:
       Name: '&f&lCommon &7&lSword'

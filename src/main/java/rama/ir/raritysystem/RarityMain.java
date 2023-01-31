@@ -1,15 +1,23 @@
 package rama.ir.raritysystem;
 
 import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffectTypeWrapper;
 import rama.ir.ItemRarity;
+import rama.ir.itemhandler.Potion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +25,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.bukkit.Material.ENCHANTED_BOOK;
+import static org.bukkit.Material.POTION;
 
 
 public class RarityMain {
 
     public ItemRarity plugin;
+
+    String potion_effect_name;
+
+    Object MyPotion(String potion_effect_name) {
+        this.potion_effect_name = potion_effect_name;
+        return null;
+    }
+
 
     public RarityMain(ItemRarity plugin){
         this.plugin = plugin;
@@ -29,6 +46,7 @@ public class RarityMain {
 
     public void addRarity(ItemStack i, String rarity, Boolean custom){
         NBTItem nbti = new NBTItem(i);
+
         if(nbti.hasKey("Rarity")) {
             return;
         }
@@ -118,7 +136,7 @@ public class RarityMain {
                 List<String> materials = rarityFile.getStringList("Items." + rarity + ".list");
                 //search for custom model data
                 for(String m : materials){
-                    if(m.contains(":") && !m.contains("ENCHANTED_BOOK")){
+                    if(m.contains(":") && !m.contains("ENCHANTED_BOOK") && !m.contains("POTION")){
                         String[] parts = m.split(":");
                         String material_name = parts[0];
                         int custom_model_data = Integer.parseInt(parts[1]);
@@ -128,6 +146,29 @@ public class RarityMain {
                         }
                     }
                 }
+                //search for potions
+                for(String m : materials){
+                    if(m.contains("POTION")){
+                        String[] parts1 = m.split("POTION:");
+                        String potion_string = parts1[1];
+                        String[] parts2 = potion_string.split(" ");
+                        String potion_effect_name = parts2[0];
+                        String[] parts3 = parts2[1].split(":");
+                        Boolean extended = Boolean.valueOf(parts3[0]);
+                        Boolean upgraded = Boolean.valueOf(parts3[1]);
+                        Potion configPotion = new Potion();
+                        configPotion.setPotion_effect_name(potion_effect_name);
+                        configPotion.setExtended(extended);
+                        configPotion.setUpgraded(upgraded);
+                        if(is.getType().equals(POTION)) {
+                            Potion potion = parsePotion(is);
+                            if(potionsAreEqual(configPotion, potion)){
+                                valid_rarities.add(rarity);
+                            }
+                        }
+                    }
+                }
+
                 //search for enchanted_book
                 for(String m : materials){
                     if(m.contains("ENCHANTED_BOOK")){
@@ -205,4 +246,29 @@ public class RarityMain {
         }
         return ChatColor.translateAlternateColorCodes('&', message);
     }
+
+    public Potion parsePotion(ItemStack is){
+        Potion potion = new Potion();
+        PotionMeta pm = (PotionMeta) is.getItemMeta();
+        PotionData potionData = pm.getBasePotionData();
+        String potion_effect_name = potionData.getType().name();
+        potion.setExtended(false);
+        potion.setUpgraded(false);
+        potion.setPotion_effect_name(potion_effect_name);
+        if(potionData.isExtended()){
+            potion.setExtended(true);
+        }
+        if(potionData.isUpgraded()){
+            potion.setUpgraded(true);
+        }
+        return potion;
     }
+
+    public Boolean potionsAreEqual(Potion p1, Potion p2){
+        if(p1.getExtended().equals(p2.getExtended()) && p1.getUpgraded().equals(p2.getUpgraded()) && p1.getPotion_effect_name().equalsIgnoreCase(p2.getPotion_effect_name())) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+}

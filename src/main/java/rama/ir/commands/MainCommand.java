@@ -73,7 +73,6 @@ public class MainCommand implements TabExecutor {
                 commands.add("reload");
                 commands.add("update <all|player name>");
                 StringUtil.copyPartialMatches(args[0], commands, completions);
-                Bukkit.getLogger().info(args[0]);
             } else if (args.length == 2) {
                 if (args[0].equals("update")) {
                     for (Player p : Bukkit.getOnlinePlayers()) {
