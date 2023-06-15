@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import rama.ir.api.ApplyRarityEvent;
 import rama.ir.commands.MainCommand;
 import rama.ir.itemhandler.ItemCreationListener;
 import rama.ir.itemhandler.RecipeBookFix;
@@ -45,6 +46,10 @@ public final class ItemRarity extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public void triggerApplyRarityEvent(ApplyRarityEvent event){
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     public FileConfiguration getRarityFile() {

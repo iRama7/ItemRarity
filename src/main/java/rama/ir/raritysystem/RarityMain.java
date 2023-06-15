@@ -1,9 +1,10 @@
 package rama.ir.raritysystem;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
@@ -17,6 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffectTypeWrapper;
 import rama.ir.ItemRarity;
+import rama.ir.api.ApplyRarityEvent;
 import rama.ir.itemhandler.Potion;
 
 import java.util.ArrayList;
@@ -90,6 +92,11 @@ public class RarityMain {
         }
         meta.setLore(lore);
         i.setItemMeta(meta);
+        String finalRarity = rarity;
+        Bukkit.getScheduler().runTask(plugin, () ->{
+            ApplyRarityEvent event = new ApplyRarityEvent(rarityFile.getString("Rarities." + finalRarity + ".Prefix"), custom, i);
+            plugin.triggerApplyRarityEvent(event);
+        });
     }
 
     public String getRarity(ItemStack is){
@@ -134,15 +141,24 @@ public class RarityMain {
                 if (rarity.equals("Other")) continue;
 
                 List<String> materials = rarityFile.getStringList("Items." + rarity + ".list");
-                //search for custom model data
+                //search for custom model data or enchantment
                 for(String m : materials){
                     if(m.contains(":") && !m.contains("ENCHANTED_BOOK") && !m.contains("POTION")){
                         String[] parts = m.split(":");
                         String material_name = parts[0];
-                        int custom_model_data = Integer.parseInt(parts[1]);
-                        NBTItem nbtItem = new NBTItem(is);
-                        if(is.getType().toString().equals(material_name) && nbtItem.getInteger("CustomModelData") == custom_model_data){
-                            valid_rarities.add(rarity);
+                        if(Character.isDigit(parts[1].toCharArray()[0])) {
+                            int custom_model_data = Integer.parseInt(parts[1]);
+                            NBTItem nbtItem = new NBTItem(is);
+                            if (is.getType().toString().equals(material_name) && nbtItem.getInteger("CustomModelData") == custom_model_data) {
+                                valid_rarities.add(rarity);
+                            }
+                        }else{
+                            String[] parts1 = parts[1].split(" ");
+                            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(parts1[0]));
+                            int level = Integer.parseInt(parts1[1]);
+                            if(is.getType().toString().equals(material_name) && is.getEnchantmentLevel(enchantment) == level){
+                                valid_rarities.add(rarity);
+                            }
                         }
                     }
                 }
