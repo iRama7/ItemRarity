@@ -6,7 +6,7 @@
 
     <groupId>rama.ir</groupId>
     <artifactId>ItemRarity</artifactId>
-    <version>1.2-SNAPSHOT-1</version>
+    <version>1.2-SNAPSHOT-2</version>
     <packaging>jar</packaging>
 
     <name>ItemRarity</name>

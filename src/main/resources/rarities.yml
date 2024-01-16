@@ -34,10 +34,9 @@ Items:
     - 'IRON_INGOT'
     - 'GOLD_INGOT:12345' #MATERIAL:Custom Model Data
     - 'ENCHANTED_BOOK:efficiency 5'
-    - 'itemsadder:magic_wand' #todo
+    - 'itemsadder:magic_wand' #TODO
   Rare:
     list:
-      - 'GOLD_INGOT'
       - 'IRON_SWORD:sharpness 1'
       - 'POTION:invisibility true:false' #POTION:(effect_name) (extended:upgraded)
   Other: #These have more priority than the above ones

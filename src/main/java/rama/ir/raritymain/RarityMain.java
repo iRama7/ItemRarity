@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.scheduler.BukkitScheduler;
 import rama.ir.ItemRarity;
 import rama.ir.NBTMain;
+import rama.ir.util.CustomModelDataItem;
 import rama.ir.util.EnchantedBook;
 import rama.ir.util.Potion;
 import rama.ir.util.Util;
@@ -32,6 +33,7 @@ public class RarityMain {
         this.rarityFile = rarityFile;
         this.ir = ir;
         rarityList.add(nullRarity);
+        util = new Util(ir);
     }
 
     private final Plugin plugin;
@@ -41,6 +43,7 @@ public class RarityMain {
     private final ItemRarity ir;
     private static final Rarity nullRarity = new Rarity("null", "", 0);
     private Boolean updating = false;
+    private final Util util;
 
 
     public Rarity getMostWeightRarity(ItemStack item){
@@ -97,7 +100,6 @@ public class RarityMain {
         itemMeta.setLore(buildLore(item));
 
         item.setItemMeta(itemMeta);
-
 
 
         Bukkit.getLogger().info("Applying " + rarity.getIdentifier() + " to " + item.getType().toString());
@@ -158,6 +160,11 @@ public class RarityMain {
                     rarity.addMaterial(Material.getMaterial(s));
                     break;
             }
+
+            if(s.split(":").length == 2 && util.isNumber(s.split(":")[1])){ //Custom model data
+                rarity.addCustomModelDataItem(new CustomModelDataItem(s));
+            }
+
         }
         //TODO loadOther();
     }

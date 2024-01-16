@@ -63,5 +63,14 @@ public class Util implements Listener {
         }
     }
 
+    public boolean isNumber(String s){
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 
 }

@@ -3,6 +3,8 @@ package rama.ir.raritymain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import rama.ir.NBTMain;
+import rama.ir.util.CustomModelDataItem;
 import rama.ir.util.Potion;
 import rama.ir.util.EnchantedBook;
 
@@ -18,6 +20,7 @@ public class Rarity {
     private List<ItemStack> items = new ArrayList<>();
     private List<EnchantedBook> enchantedBooks = new ArrayList<>();
     private List<Potion> potionItems = new ArrayList<>();
+    private List<CustomModelDataItem> customModelDataItems = new ArrayList<>();
 
     public Rarity(String identifier, String name, int weight){
         this.identifier = identifier;
@@ -57,7 +60,15 @@ public class Rarity {
                         break;
                     }
                 }
+        }else if(new NBTMain().hasCustomModelData(item)){ //CustomModelData
+            for(CustomModelDataItem customModelDataItem : customModelDataItems){
+                if(customModelDataItem.equals(item)){
+                    b = true;
+                    break;
+                }
+            }
         }
+
         if (materials.contains(item.getType())) {
             b = true;
         }
@@ -112,5 +123,10 @@ public class Rarity {
     public void addPotionItem(Potion potion){
         potionItems.add(potion);
     }
+
+    public void addCustomModelDataItem(CustomModelDataItem item){
+        customModelDataItems.add(item);
+    }
+
 
 }
