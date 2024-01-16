@@ -1,4 +1,5 @@
 Config:
+  checkerTime: 10 #in ticks;
   debug-mode: false
   lore-format:
     - "{item-lore}"

@@ -6,7 +6,7 @@
 
     <groupId>rama.ir</groupId>
     <artifactId>ItemRarity</artifactId>
-    <version>1.1.4</version>
+    <version>1.2-SNAPSHOT-1</version>
     <packaging>jar</packaging>
 
     <name>ItemRarity</name>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
-            <version>2.11.3</version>
+            <version>2.12.0</version>
         </dependency>
     </dependencies>
 </project>

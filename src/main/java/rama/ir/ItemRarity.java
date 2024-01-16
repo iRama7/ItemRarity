@@ -8,13 +8,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import rama.ir.api.ApplyRarityEvent;
-import rama.ir.commands.MainCommand;
-import rama.ir.itemhandler.ItemCreationListener;
-import rama.ir.itemhandler.RecipeBookFix;
+import rama.ir.raritymain.RarityMain;
+import rama.ir.util.Util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 public final class ItemRarity extends JavaPlugin {
 
@@ -22,7 +20,10 @@ public final class ItemRarity extends JavaPlugin {
     private File rarityFileFile;
     private FileConfiguration rarityFile;
 
-    public HashMap<String, String> rarities = new HashMap<>();
+    private RarityMain rarityMain;
+
+    private Util util;
+
 
 
     @Override
@@ -37,10 +38,12 @@ public final class ItemRarity extends JavaPlugin {
             }
         });
         createRarityFile();
-        registerEvents();
-        loadRarities();
         this.saveDefaultConfig();
+
         registerCommands();
+        initializeRarityMain();
+        util = new Util(this);
+        registerEvents();
     }
 
     @Override
@@ -71,14 +74,7 @@ public final class ItemRarity extends JavaPlugin {
     }
 
 
-    public void loadRarities(){
-       for(String i : rarityFile.getConfigurationSection("Rarities").getKeys(false)){
-           String Name = rarityFile.getString("Rarities." + i + ".Name");
-           String Prefix = rarityFile.getString("Rarities." + i + ".Prefix");
-           rarities.put(Name, Prefix);
-       }
-       logger("&eLoaded &a" + rarities.size() + " &erarities");
-    }
+
 
     public void reloadRarities() throws IOException, InvalidConfigurationException {
         rarityFile.load(rarityFileFile);
@@ -87,8 +83,7 @@ public final class ItemRarity extends JavaPlugin {
     public void registerEvents(){
         logger("&eLoading events...");
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new ItemCreationListener(this), this);
-        pm.registerEvents(new RecipeBookFix(this), this);
+        pm.registerEvents(util, this);
     }
 
     public void registerCommands(){
@@ -99,6 +94,26 @@ public final class ItemRarity extends JavaPlugin {
     public void logger(String message){
         getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&2ItemRarity&6] " + message));
     }
+
+    public void initializeRarityMain(){
+        rarityMain = new RarityMain(this, rarityFile, this);
+        rarityMain.startItemStackChecker(this.getConfig().getInt("Config.checkerTime"));
+        rarityMain.loadRarities();
+    }
+
+    public RarityMain getRarityMain(){
+        return rarityMain;
+    }
+
+
+    public Util getUtil() {
+        return util;
+    }
+
+    public void debug(String m){
+
+    }
+
 
 
 }

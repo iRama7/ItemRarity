@@ -1,38 +1,41 @@
 Rarities:
     1:
-      Name: Common
-      Prefix: '&f&lCOMMON' # #FFFFFF for hex color codes
-      Glow-color: 'WHITE'
+      identifier: Common
+      name: '&f&lCOMMON' # #FFFFFF for hex color codes
+      weight: 1
+      glow: 'WHITE'
     2:
-      Name: Uncommon
-      Prefix: '&a&lUNCOMMON'
-      Glow-color: 'GREEN'
+      identifier: Uncommon
+      weight: 2
+      name: '&a&lUNCOMMON'
+      glow: 'GREEN'
     3:
-      Name: Rare
-      Prefix: '&9&lRARE'
-      Glow-color: 'AQUA'
+      identifier: Rare
+      weight: 3
+      name: '&9&lRARE'
+      glow: 'AQUA'
     4:
-      Name: Epic
-      Prefix: '&5&lEPIC'
-      Glow-color: 'DARK_PURPLE'
+      identifier: Epic
+      weight: 4
+      name: '&5&lEPIC'
+      glow: 'DARK_PURPLE'
     5:
-      Name: Legendary
-      Prefix: '&6&lLEGENDARY'
-      Glow-color: 'GOLD'
+      identifier: Legendary
+      weight: 5
+      name: '&6&lLEGENDARY'
+      glow: 'GOLD'
 Items:
-  Common:
-    priority: 3 #Lowest overrides
+  Common: #Identifier
     list:
     - 'DEFAULT' #This would add all items to the Common rarity if they don't have a rarity set below
   Uncommon:
-    priority: 2
     list:
     - 'DIAMOND'
     - 'IRON_INGOT'
     - 'GOLD_INGOT:12345' #MATERIAL:Custom Model Data
     - 'ENCHANTED_BOOK:efficiency 5'
+    - 'itemsadder:magic_wand' #todo
   Rare:
-    priority: 1
     list:
       - 'GOLD_INGOT'
       - 'IRON_SWORD:sharpness 1'
