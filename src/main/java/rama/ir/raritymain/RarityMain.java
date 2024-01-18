@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -20,8 +21,10 @@ import rama.ir.util.EnchantedBook;
 import rama.ir.util.Potion;
 import rama.ir.util.Util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,10 +81,6 @@ public class RarityMain {
             }
         }
 
-        if(updating){
-            rarity = null;
-        }
-
         return rarity;
     }
 
@@ -92,6 +91,7 @@ public class RarityMain {
         if(getRarity(item) != null){ // remove if present
             removeRarity(item);
         }
+
 
         NBT.addNBT(rarity.getIdentifier(), item);
 
@@ -112,7 +112,7 @@ public class RarityMain {
         scheduler.runTaskTimerAsynchronously(plugin, () -> {
             for(Player player : Bukkit.getOnlinePlayers()){
                 for(ItemStack item : player.getInventory().getContents()){
-                    if(item != null && !item.getType().equals(Material.AIR) && getRarity(item) == null && !ir.getUtil().isPlayerExcluded(player)){
+                    if(item != null && !item.getType().equals(Material.AIR) && getRarity(item) == null && !ir.getUtil().isPlayerExcluded(player) || updating){
                         queryItem(item);
                     }
                 }
@@ -138,6 +138,9 @@ public class RarityMain {
             rarityList.add(rarity);
             loadItems(rarity);
             count++;
+        }
+        if(rarityFile.getConfigurationSection("Items.Custom") != null) {
+            loadCustom(rarityFile.getConfigurationSection("Items.Custom").getKeys(false));
         }
         ir.logger("&eLoaded &a" + count + " &erarities");
     }
@@ -166,27 +169,68 @@ public class RarityMain {
             }
 
         }
-        //TODO loadOther();
+    }
+
+    public void loadCustom(Set<String> list){ //Custom items loading
+        for(String item : list){
+            ItemStack itemStack = new ItemStack(Material.valueOf(rarityFile.getString("Items.Custom." + item + ".Material")));
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if(rarityFile.contains("Items.Custom." + item + ".Display-name")){
+                itemMeta.setDisplayName(colorized(rarityFile.getString("Items.Custom." + item + ".Display-name")));
+            }
+
+            if(rarityFile.contains("Items.Custom." + item + ".Lore")){
+                itemMeta.setLore(colorized(rarityFile.getStringList("Items.Custom." + item + ".Lore")));
+            }
+            itemStack.setItemMeta(itemMeta);
+            Rarity rarity = getRarityByID(rarityFile.getString("Items.Custom." + item + ".Rarity"));
+            rarity.addItem(itemStack);
+        }
+    }
+
+    public void addCustomItemStack(ItemStack itemStack, Rarity rarity) throws IOException, InvalidConfigurationException {
+        int pos = 0;
+        if(rarityFile.getConfigurationSection("Items.Custom") != null) {
+            pos = rarityFile.getConfigurationSection("Items.Custom").getKeys(false).size();
+        }
+        pos+=1;
+        rarityFile.set("Items.Custom." + pos + ".Material", itemStack.getType().name());
+
+        if(itemStack.getItemMeta().hasDisplayName()) {
+            rarityFile.set("Items.Custom." + pos + ".Display-name", itemStack.getItemMeta().getDisplayName());
+        }
+
+        if(itemStack.getItemMeta().hasLore()) {
+            rarityFile.set("Items.Custom." + pos + ".Lore", itemStack.getItemMeta().getLore());
+        }
+
+        rarityFile.set("Items.Custom." + pos + ".Rarity", rarity.getIdentifier());
+        ir.reloadRarities();
+        loadCustom(rarityFile.getConfigurationSection("Items.Custom").getKeys(false));
     }
 
     public Rarity getRarityByID(String id){ //TODO
+        for(Rarity rarity : rarityList){
+            if(rarity.getIdentifier().equals(id)){
+                return rarity;
+            }
+        }
 
-
-
-        return  null;
+        return null;
     }
 
-    public void removeRarity(ItemStack itemStack){
-        ItemStack nullItemStack = new ItemStack(Material.MAP);
-        setRarity(nullItemStack, getRarity(itemStack));
-        NBT.removeNBT(itemStack);
+    public ItemStack removeRarity(ItemStack itemStack){
+            ItemStack nullItemStack = new ItemStack(Material.MAP);
+            setRarity(nullItemStack, getMostWeightRarity(itemStack));
+            NBT.removeNBT(itemStack);
 
-        List<String> loreToRemove = buildLore(nullItemStack);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        List<String> itemLore = itemMeta.getLore();
-        itemLore.removeAll(loreToRemove);
-        itemMeta.setLore(itemLore);
-        itemStack.setItemMeta(itemMeta);
+            List<String> loreToRemove = buildLore(nullItemStack);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            List<String> itemLore = itemMeta.getLore();
+            itemLore.removeAll(loreToRemove);
+            itemMeta.setLore(itemLore);
+            itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 
     public void setUpdating(){
@@ -205,6 +249,9 @@ public class RarityMain {
         List<String> lore_format = getLore_format();
         List<String> build = new ArrayList<>();
         Rarity rarity = getRarity(item);
+        if(updating){
+            rarity = getMostWeightRarity(item);
+        }
 
         for (int i = 0; i < lore_format.size(); i++){
 
@@ -252,5 +299,13 @@ public class RarityMain {
         }
         return ChatColor.translateAlternateColorCodes('&', s);
     }
+
+    public List<String> colorized(List<String> list){
+        for(int index = 0; index < list.size(); index++){
+            list.set(index, colorized(list.get(index)));
+        }
+        return list;
+    }
+
 
 }

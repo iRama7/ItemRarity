@@ -76,8 +76,8 @@ public final class ItemRarity extends JavaPlugin {
 
 
 
-    public void reloadRarities() throws IOException, InvalidConfigurationException {
-        rarityFile.load(rarityFileFile);
+    public void reloadRarities() throws IOException {
+        rarityFile.save(rarityFileFile);
     }
 
     public void registerEvents(){

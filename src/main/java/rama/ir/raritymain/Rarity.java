@@ -17,7 +17,7 @@ public class Rarity {
     private final String name;
     private final int weight;
     private List<Material> materials = new ArrayList<>();
-    private List<ItemStack> items = new ArrayList<>();
+    private List<ItemStack> customItems = new ArrayList<>();
     private List<EnchantedBook> enchantedBooks = new ArrayList<>();
     private List<Potion> potionItems = new ArrayList<>();
     private List<CustomModelDataItem> customModelDataItems = new ArrayList<>();
@@ -67,20 +67,17 @@ public class Rarity {
                     break;
                 }
             }
+        }else {
+            for (ItemStack i : customItems) {
+                if (iEqualsI(i, item)) {
+                    b = true;
+                }
+            }
         }
 
         if (materials.contains(item.getType())) {
             b = true;
         }
-
-
-            /*
-            for (ItemStack i : items) {
-                if (iEqualsI(i, item)) {
-                    b = true;
-                }
-            }
-             */
 
         return b;
     }
@@ -102,7 +99,7 @@ public class Rarity {
             }
         }
 
-        b = equalsDisplayName == equalsLore;
+        b = equalsDisplayName == equalsLore && i.getType().equals(i2.getType());
 
         return b;
 
@@ -113,7 +110,7 @@ public class Rarity {
     }
 
     public void addItem(ItemStack item){
-        items.add(item);
+        customItems.add(item);
     }
 
     public void addEnchantedBook(EnchantedBook book){
