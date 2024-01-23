@@ -44,13 +44,18 @@ public class RarityMain {
     private final List<Rarity> rarityList = new ArrayList<>();
     private final FileConfiguration rarityFile;
     private final ItemRarity ir;
-    private static final Rarity nullRarity = new Rarity("null", "", 0);
+    private static final Rarity nullRarity = new Rarity("null", "", 0, null);
     private Boolean updating = false;
     private final Util util;
 
 
     public Rarity getMostWeightRarity(ItemStack item){
-        Rarity mostWeightRarity = new Rarity(null, null, 0);
+
+        if(getRarity(item) != null){ // remove if present
+            removeRarity(item);
+        }
+
+        Rarity mostWeightRarity = new Rarity(null, null, 0, ir);
 
         for(Rarity r : rarityList){
             if(r.contains(item) && r.getWeight() > mostWeightRarity.getWeight()){
@@ -72,6 +77,7 @@ public class RarityMain {
         Rarity rarity = null;
 
         String identifier = NBT.getNBT(item);
+        ir.logger("Identifier for " + item.getType() + " " + identifier);
         if(identifier != null){
             for(Rarity r : rarityList){
                 if(r.getIdentifier().equals(identifier)){
@@ -88,11 +94,6 @@ public class RarityMain {
     public void setRarity(ItemStack item, Rarity rarity){ //TODO
 
 
-        if(getRarity(item) != null){ // remove if present
-            removeRarity(item);
-        }
-
-
         NBT.addNBT(rarity.getIdentifier(), item);
 
         ItemMeta itemMeta = item.getItemMeta();
@@ -102,7 +103,7 @@ public class RarityMain {
         item.setItemMeta(itemMeta);
 
 
-        Bukkit.getLogger().info("Applying " + rarity.getIdentifier() + " to " + item.getType().toString());
+        ir.logger("Applying " + rarity.getIdentifier() + " to " + item.getType().toString());
 
 
     }
@@ -134,7 +135,7 @@ public class RarityMain {
             String identifier = rarityFile.getString("Rarities." + i + ".identifier");
             String name = rarityFile.getString("Rarities." + i + ".name");
             int weight = rarityFile.getInt("Rarities." + i + ".weight");
-            Rarity rarity = new Rarity(identifier, name, weight);
+            Rarity rarity = new Rarity(identifier, name, weight, ir);
             rarityList.add(rarity);
             loadItems(rarity);
             count++;
@@ -221,7 +222,7 @@ public class RarityMain {
 
     public ItemStack removeRarity(ItemStack itemStack){
             ItemStack nullItemStack = new ItemStack(Material.MAP);
-            setRarity(nullItemStack, getMostWeightRarity(itemStack));
+            setRarity(nullItemStack, getRarity(itemStack));
             NBT.removeNBT(itemStack);
 
             List<String> loreToRemove = buildLore(nullItemStack);
@@ -249,9 +250,6 @@ public class RarityMain {
         List<String> lore_format = getLore_format();
         List<String> build = new ArrayList<>();
         Rarity rarity = getRarity(item);
-        if(updating){
-            rarity = getMostWeightRarity(item);
-        }
 
         for (int i = 0; i < lore_format.size(); i++){
 
