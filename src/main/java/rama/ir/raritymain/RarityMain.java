@@ -160,6 +160,13 @@ public class RarityMain {
                 case "POTION":
                     rarity.addPotionItem(new Potion(s));
                     break;
+                case "ITEMSADDER":
+                    if(!ir.isItemsAdderHook()){
+                        ir.logger("&cSkipping &7" + s + " &cbecause &eItemsAdder &chook is disabled.");
+                        continue;
+                    }
+                    rarity.addItemsAdderItem(s.split(":")[1]);
+                    break;
                 default:
                     rarity.addMaterial(Material.getMaterial(s));
                     break;
@@ -305,5 +312,8 @@ public class RarityMain {
         return list;
     }
 
+    public List<Rarity> getRarities(){
+        return rarityList;
+    }
 
 }

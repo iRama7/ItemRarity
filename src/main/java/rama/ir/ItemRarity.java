@@ -24,7 +24,7 @@ public final class ItemRarity extends JavaPlugin {
 
     private Util util;
 
-
+    private boolean itemsAdderHook = false;
 
     @Override
     public void onEnable() {
@@ -37,11 +37,12 @@ public final class ItemRarity extends JavaPlugin {
                 logger("&eLatest version: "+"&a"+version);
             }
         });
+        hookItemsAdder();
         createRarityFile();
         this.saveDefaultConfig();
 
-        registerCommands();
         initializeRarityMain();
+        registerCommands();
         util = new Util(this);
         registerEvents();
     }
@@ -49,6 +50,19 @@ public final class ItemRarity extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public boolean isItemsAdderHook(){
+        return itemsAdderHook;
+    }
+
+    public void hookItemsAdder(){
+        if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null){
+            logger("&eEnabling &dItemsAdder &ehook!");
+            itemsAdderHook = true;
+        }else{
+            logger("&dItemsAdder &enot found.");
+        }
     }
 
     public void triggerApplyRarityEvent(ApplyRarityEvent event){
@@ -88,7 +102,7 @@ public final class ItemRarity extends JavaPlugin {
 
     public void registerCommands(){
         logger("&eLoading commands...");
-        getCommand("ir").setExecutor(new MainCommand(this));
+        getCommand("ir").setExecutor(new MainCommand(this, rarityMain));
     }
 
     public void logger(String message){

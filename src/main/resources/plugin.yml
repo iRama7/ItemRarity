@@ -5,6 +5,7 @@ api-version: 1.13
 depend: [ NBTAPI ]
 softdepend:
   - ItemRarityGlow
+  - ItemsAdder
 authors: [ ImRama ]
 description: Adds rarity to your items.
 commands:

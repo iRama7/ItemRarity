@@ -6,7 +6,7 @@
 
     <groupId>rama.ir</groupId>
     <artifactId>ItemRarity</artifactId>
-    <version>1.2-SNAPSHOT-4</version>
+    <version>1.2-SNAPSHOT-5</version>
     <packaging>jar</packaging>
 
     <name>ItemRarity</name>
@@ -74,6 +74,10 @@
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>jitpack-repo</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -87,6 +91,12 @@
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
             <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.LoneDev6</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>3.6.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

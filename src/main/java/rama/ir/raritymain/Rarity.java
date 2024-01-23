@@ -1,5 +1,6 @@
 package rama.ir.raritymain;
 
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,7 @@ public class Rarity {
     private List<EnchantedBook> enchantedBooks = new ArrayList<>();
     private List<Potion> potionItems = new ArrayList<>();
     private List<CustomModelDataItem> customModelDataItems = new ArrayList<>();
+    private List<CustomStack> customStacks = new ArrayList<>();
 
     private final ItemRarity ir;
 
@@ -67,6 +69,13 @@ public class Rarity {
         }else if(new NBTMain().hasCustomModelData(item)){ //CustomModelData
             for(CustomModelDataItem customModelDataItem : customModelDataItems){
                 if(customModelDataItem.equals(item)){
+                    b = true;
+                    break;
+                }
+            }
+        }else if(CustomStack.byItemStack(item) != null){
+            for(CustomStack customStack : customStacks){
+                if(customStack.getNamespace().equals(CustomStack.byItemStack(item).getNamespace())){
                     b = true;
                     break;
                 }
@@ -136,6 +145,15 @@ public class Rarity {
 
     public void addCustomModelDataItem(CustomModelDataItem item){
         customModelDataItems.add(item);
+    }
+
+    public void addItemsAdderItem(String namespace){
+        CustomStack customItem = CustomStack.getInstance(namespace);
+        if(customItem != null){
+            customStacks.add(customItem);
+        }else{
+            ir.logger("&cDidn't found item &e" + namespace + " &cin ItemsAdder.");
+        }
     }
 
 

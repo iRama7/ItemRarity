@@ -34,7 +34,7 @@ Items:
     - 'IRON_INGOT'
     - 'GOLD_INGOT:12345' #MATERIAL:Custom Model Data
     - 'ENCHANTED_BOOK:efficiency 5'
-    - 'itemsadder:magic_wand' #TODO
+    - 'ITEMSADDER:magic_wand' #ItemsAdder item name
   Rare:
     list:
       - 'IRON_SWORD:sharpness 1'
