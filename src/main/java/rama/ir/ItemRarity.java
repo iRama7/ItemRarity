@@ -24,23 +24,22 @@ public final class ItemRarity extends JavaPlugin {
 
     private Util util;
 
-    private boolean itemsAdderHook = false;
+    private boolean itemsAdderHook;
 
     @Override
     public void onEnable() {
         new UpdateChecker(this, 105483).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
-                logger("&eYou are using the latest version.");
+                logger("&eYou are using the latest version.", false);
             } else {
-                logger("&eThere is a new update available!");
-                logger("&eYour current version: "+"&c"+this.getDescription().getVersion());
-                logger("&eLatest version: "+"&a"+version);
+                logger("&eThere is a new update available!", false);
+                logger("&eYour current version: "+"&c"+this.getDescription().getVersion(), false);
+                logger("&eLatest version: "+"&a"+version, false);
             }
         });
         hookItemsAdder();
         createRarityFile();
         this.saveDefaultConfig();
-
         initializeRarityMain();
         registerCommands();
         util = new Util(this);
@@ -58,10 +57,10 @@ public final class ItemRarity extends JavaPlugin {
 
     public void hookItemsAdder(){
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null){
-            logger("&eEnabling &dItemsAdder &ehook!");
+            logger("&eEnabling &dItemsAdder &ehook!", false);
             itemsAdderHook = true;
         }else{
-            logger("&dItemsAdder &enot found.");
+            logger("&dItemsAdder &enot found.", false);
         }
     }
 
@@ -91,28 +90,44 @@ public final class ItemRarity extends JavaPlugin {
 
 
     public void reloadRarities() throws IOException {
-        rarityFile.save(rarityFileFile);
+        rarityFile = YamlConfiguration.loadConfiguration(rarityFileFile);
     }
 
     public void registerEvents(){
-        logger("&eLoading events...");
+        logger("&eLoading events...", false);
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(util, this);
     }
 
     public void registerCommands(){
-        logger("&eLoading commands...");
+        logger("&eLoading commands...", false);
         getCommand("ir").setExecutor(new MainCommand(this, rarityMain));
     }
 
-    public void logger(String message){
-        getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&2ItemRarity&6] " + message));
+    public void logger(String message, Boolean debug){
+
+        boolean debugMode = getConfig().getBoolean("Config.debug-mode");
+
+        if(debug){
+            if(debugMode){
+                getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&2ItemRarity&6] &e[&cDEBUG&e] " + message));
+            }
+        }else{
+            getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&2ItemRarity&6] " + message));
+        }
+
+
     }
 
-    public void initializeRarityMain(){
+    public void initializeRarityMain() {
         rarityMain = new RarityMain(this, rarityFile, this);
         rarityMain.startItemStackChecker(this.getConfig().getInt("Config.checkerTime"));
         rarityMain.loadRarities();
+    }
+
+    public void stopRarityMain(){
+        rarityMain.stopChecker();
+        rarityMain = null;
     }
 
     public RarityMain getRarityMain(){

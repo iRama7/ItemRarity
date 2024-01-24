@@ -73,11 +73,13 @@ public class Rarity {
                     break;
                 }
             }
-        }else if(CustomStack.byItemStack(item) != null){
-            for(CustomStack customStack : customStacks){
-                if(customStack.getNamespace().equals(CustomStack.byItemStack(item).getNamespace())){
-                    b = true;
-                    break;
+        }else if(ir != null && ir.isItemsAdderHook()){
+            if(CustomStack.byItemStack(item) != null) {
+                for (CustomStack customStack : customStacks) {
+                    if (customStack.getNamespace().equals(CustomStack.byItemStack(item).getNamespace())) {
+                        b = true;
+                        break;
+                    }
                 }
             }
         }else {
@@ -97,9 +99,9 @@ public class Rarity {
 
     public boolean iEqualsI(ItemStack i, ItemStack i2) {
 
-        ir.logger("Comparing in " + identifier);
-        ir.logger(i.toString());
-        ir.logger(i2.toString());
+        ir.logger("Comparing in " + identifier, true);
+        ir.logger(i.toString(), true);
+        ir.logger(i2.toString(), true);
 
         boolean b = false;
         boolean equalsDisplayName = false;
@@ -152,7 +154,7 @@ public class Rarity {
         if(customItem != null){
             customStacks.add(customItem);
         }else{
-            ir.logger("&cDidn't found item &e" + namespace + " &cin ItemsAdder.");
+            ir.logger("&cDidn't found item &e" + namespace + " &cin ItemsAdder.", false);
         }
     }
 

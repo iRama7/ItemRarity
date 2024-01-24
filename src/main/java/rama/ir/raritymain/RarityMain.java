@@ -3,16 +3,12 @@ package rama.ir.raritymain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionData;
 import org.bukkit.scheduler.BukkitScheduler;
 import rama.ir.ItemRarity;
 import rama.ir.NBTMain;
@@ -25,13 +21,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RarityMain {
 
     public RarityMain(Plugin plugin, FileConfiguration rarityFile, ItemRarity ir){
+        scheduler = Bukkit.getScheduler();
         this.plugin = plugin;
         this.rarityFile = rarityFile;
         this.ir = ir;
@@ -47,6 +43,8 @@ public class RarityMain {
     private static final Rarity nullRarity = new Rarity("null", "", 0, null);
     private Boolean updating = false;
     private final Util util;
+
+    private final BukkitScheduler scheduler;
 
 
     public Rarity getMostWeightRarity(ItemStack item){
@@ -77,7 +75,7 @@ public class RarityMain {
         Rarity rarity = null;
 
         String identifier = NBT.getNBT(item);
-        ir.logger("Identifier for " + item.getType() + " " + identifier);
+        ir.logger("Identifier for " + item.getType() + " " + identifier, true);
         if(identifier != null){
             for(Rarity r : rarityList){
                 if(r.getIdentifier().equals(identifier)){
@@ -103,7 +101,7 @@ public class RarityMain {
         item.setItemMeta(itemMeta);
 
 
-        ir.logger("Applying " + rarity.getIdentifier() + " to " + item.getType().toString());
+        ir.logger("Applying " + rarity.getIdentifier() + " to " + item.getType().toString(), true);
 
 
     }
@@ -143,7 +141,7 @@ public class RarityMain {
         if(rarityFile.getConfigurationSection("Items.Custom") != null) {
             loadCustom(rarityFile.getConfigurationSection("Items.Custom").getKeys(false));
         }
-        ir.logger("&eLoaded &a" + count + " &erarities");
+        ir.logger("&eLoaded &a" + count + " &erarities", false);
     }
 
     public void loadItems(Rarity rarity){
@@ -162,7 +160,7 @@ public class RarityMain {
                     break;
                 case "ITEMSADDER":
                     if(!ir.isItemsAdderHook()){
-                        ir.logger("&cSkipping &7" + s + " &cbecause &eItemsAdder &chook is disabled.");
+                        ir.logger("&cSkipping &7" + s + " &cbecause &eItemsAdder &chook is disabled.", false);
                         continue;
                     }
                     rarity.addItemsAdderItem(s.split(":")[1]);
@@ -314,6 +312,11 @@ public class RarityMain {
 
     public List<Rarity> getRarities(){
         return rarityList;
+    }
+
+    public void stopChecker(){
+        ir.logger("Cancelling schedulers...", false);
+        scheduler.cancelTasks(ir);
     }
 
 }
