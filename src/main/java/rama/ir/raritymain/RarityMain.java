@@ -158,12 +158,11 @@ public class RarityMain {
                 case "POTION":
                     rarity.addPotionItem(new Potion(s));
                     break;
-                case "ITEMSADDER":
-                    if(!ir.isItemsAdderHook()){
-                        ir.logger("&cSkipping &7" + s + " &cbecause &eItemsAdder &chook is disabled.", false);
-                        continue;
-                    }
-                    rarity.addItemsAdderItem(s.split(":")[1]);
+                case "SPLASH_POTION":
+                    rarity.addPotionItem(new Potion(s));
+                    break;
+                case "LINGERING_POTION":
+                    rarity.addPotionItem(new Potion(s));
                     break;
                 default:
                     rarity.addMaterial(Material.getMaterial(s));
@@ -174,6 +173,22 @@ public class RarityMain {
                 rarity.addCustomModelDataItem(new CustomModelDataItem(s));
             }
 
+        }
+    }
+
+    public void loadItemsAdderItems(){
+        Bukkit.getLogger().info("Loading items adder items");
+        for(Rarity rarity : rarityList) {
+            for (String s : rarityFile.getStringList("Items." + rarity.getIdentifier() + ".list")) {
+                if (s.split(":")[0].equals("ITEMSADDER")) {
+                    if (!ir.isItemsAdderHook()) {
+                        ir.logger("&cSkipping &7" + s + " &cbecause &eItemsAdder &chook is disabled.", false);
+                        continue;
+                    }
+                    rarity.addItemsAdderItem(s.split(":")[1]);
+                }
+
+            }
         }
     }
 

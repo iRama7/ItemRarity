@@ -9,6 +9,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import rama.ir.api.ApplyRarityEvent;
 import rama.ir.raritymain.RarityMain;
+import rama.ir.util.ItemsAdderEvent;
 import rama.ir.util.Util;
 
 import java.io.File;
@@ -37,10 +38,10 @@ public final class ItemRarity extends JavaPlugin {
                 logger("&eLatest version: "+"&a"+version, false);
             }
         });
-        hookItemsAdder();
         createRarityFile();
         this.saveDefaultConfig();
         initializeRarityMain();
+        hookItemsAdder();
         registerCommands();
         util = new Util(this);
         registerEvents();
@@ -58,9 +59,11 @@ public final class ItemRarity extends JavaPlugin {
     public void hookItemsAdder(){
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null){
             logger("&eEnabling &dItemsAdder &ehook!", false);
+            getServer().getPluginManager().registerEvents(new ItemsAdderEvent(rarityMain), this);
             itemsAdderHook = true;
         }else{
             logger("&dItemsAdder &enot found.", false);
+            itemsAdderHook = false;
         }
     }
 

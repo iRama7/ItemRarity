@@ -2,7 +2,7 @@ package rama.ir.util;
 
 import org.bukkit.inventory.ItemStack;
 
-public class CustomItem {
+public class CustomItem{
 
     private final ItemStack bukkitItemStack;
 

@@ -49,6 +49,10 @@ public class Rarity {
     public boolean contains(ItemStack item){
         boolean b = false;
 
+        if(ir == null){
+            return false;
+        }
+
         Material itemMaterial = item.getType();
 
         if(itemMaterial.equals(Material.ENCHANTED_BOOK)){ // Enchanted book
@@ -59,7 +63,7 @@ public class Rarity {
                 }
             }
 
-        }else if(itemMaterial.equals(Material.POTION)){ // Potion
+        }else if(itemMaterial.equals(Material.POTION) || itemMaterial.equals(Material.SPLASH_POTION) || itemMaterial.equals(Material.LINGERING_POTION)){ // Potion
                 for(Potion potion : potionItems){
                     if(potion.equals(item)){
                         b = true;
@@ -73,19 +77,21 @@ public class Rarity {
                     break;
                 }
             }
-        }else if(ir != null && ir.isItemsAdderHook()){
-            if(CustomStack.byItemStack(item) != null) {
-                for (CustomStack customStack : customStacks) {
-                    if (customStack.getNamespace().equals(CustomStack.byItemStack(item).getNamespace())) {
-                        b = true;
-                        break;
-                    }
-                }
-            }
-        }else {
+        } else {
             for (ItemStack i : customItems) {
                 if (iEqualsI(i, item)) {
                     b = true;
+                }
+            }
+        }
+
+        if(!customStacks.isEmpty()) {
+            if (CustomStack.byItemStack(item) != null) {
+                for (CustomStack customStack : customStacks) {
+                    if (customStack.getId().equals(CustomStack.byItemStack(item).getId())) {
+                        b = true;
+                        break;
+                    }
                 }
             }
         }
@@ -153,6 +159,7 @@ public class Rarity {
         CustomStack customItem = CustomStack.getInstance(namespace);
         if(customItem != null){
             customStacks.add(customItem);
+            ir.logger("&cFound item &e" + namespace + " &cin ItemsAdder.", false);
         }else{
             ir.logger("&cDidn't found item &e" + namespace + " &cin ItemsAdder.", false);
         }

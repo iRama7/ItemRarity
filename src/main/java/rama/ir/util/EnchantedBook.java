@@ -14,7 +14,6 @@ public class EnchantedBook {
     int level;
 
     public EnchantedBook(String s){ // ENCHANTED_BOOK:efficiency 5
-        Bukkit.getLogger().info(s);
         String[] parts = s.split(":")[1].split(" ");
         enchantment = Enchantment.getByKey(NamespacedKey.minecraft(parts[0]));
         level = Integer.parseInt(parts[1]);
