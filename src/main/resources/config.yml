@@ -6,3 +6,5 @@ Config:
     - ""
     - "&7Rarity: {rarity-prefix}"
   enable-glow: true
+  inventory-blacklist:
+    - "Example inventory title" #<- Inventory title here

@@ -1,12 +1,10 @@
 package rama.ir.util;
 
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
-import java.util.Map;
 
 public class EnchantedBook {
 
