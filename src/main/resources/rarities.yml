@@ -1,7 +1,7 @@
 Rarities:
     1:
       identifier: Common
-      name: '&f&lCOMMON' # #FFFFFF for hex color codes
+      name: '&f&lCOMMON' #FFFFFF for hex color codes
       weight: 1
       glow: 'WHITE'
     2:
@@ -24,6 +24,11 @@ Rarities:
       weight: 5
       name: '&6&lLEGENDARY'
       glow: 'GOLD'
+    6:
+      identifier: Blacklist #Blacklist rarity means no rarity
+      weight: 6
+      name: ' '
+      glow: ' '
 Items:
   Common: #Identifier
     list:

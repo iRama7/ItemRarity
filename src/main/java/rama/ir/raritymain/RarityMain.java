@@ -41,6 +41,7 @@ public class RarityMain {
     private final FileConfiguration rarityFile;
     private final ItemRarity ir;
     private static final Rarity nullRarity = new Rarity("null", "", 0, null);
+    private static final Rarity blacklistRarity = new Rarity("Blacklist", "", 0, null);
     private Boolean updating = false;
     private final Util util;
 
@@ -65,6 +66,11 @@ public class RarityMain {
             mostWeightRarity = nullRarity;
             Bukkit.getLogger().info("null rarity for " + item.getType());
         }
+        if(mostWeightRarity.getIdentifier().equals("Blacklist")){
+            mostWeightRarity = blacklistRarity;
+            ir.logger("Blacklist rarity for " + item.getType(), true);
+        }
+
 
         return mostWeightRarity;
 
@@ -94,11 +100,14 @@ public class RarityMain {
 
         NBT.addNBT(rarity.getIdentifier(), item);
 
-        ItemMeta itemMeta = item.getItemMeta();
+        if(!rarity.getIdentifier().equals("Blacklist")) {
 
-        itemMeta.setLore(buildLore(item));
+            ItemMeta itemMeta = item.getItemMeta();
 
-        item.setItemMeta(itemMeta);
+            itemMeta.setLore(buildLore(item));
+
+            item.setItemMeta(itemMeta);
+        }
 
 
         ir.logger("Applying " + rarity.getIdentifier() + " to " + item.getType().toString(), true);
