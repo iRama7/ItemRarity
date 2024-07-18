@@ -100,7 +100,7 @@ public class RarityMain {
 
         NBT.addNBT(rarity.getIdentifier(), item);
 
-        if(!rarity.getIdentifier().equals("Blacklist")) {
+        if(!rarity.getIdentifier().equals("Blacklist") && rarity.getIdentifier() != null) {
 
             ItemMeta itemMeta = item.getItemMeta();
 
