@@ -105,8 +105,14 @@ public class Rarity {
 
     public boolean iEqualsI(ItemStack i, ItemStack i2) {
 
-        ir.logger("Comparing in " + identifier, true);
+        ir.logger("Comparing two ItemStacks for Rarity " + identifier, true);
+        ir.logger(" ", true);
+        ir.logger("ITEMSTACK 1 - From plugin config " + identifier, true);
+        ir.logger(" ", true);
         ir.logger(i.toString(), true);
+        ir.logger(" ", true);
+        ir.logger("ITEMSTACK 2 - From players inventory " + identifier, true);
+        ir.logger(" ", true);
         ir.logger(i2.toString(), true);
 
         boolean b = false;
@@ -130,6 +136,9 @@ public class Rarity {
         }
 
         b = equalsDisplayName && equalsLore && i.getType().equals(i2.getType());
+
+        ir.logger(" ", true);
+        ir.logger("RESULT: " + b, true);
 
         return b;
 

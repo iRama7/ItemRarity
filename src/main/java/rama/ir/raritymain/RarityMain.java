@@ -1,5 +1,6 @@
 package rama.ir.raritymain;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -324,7 +325,7 @@ public class RarityMain {
             s = s.replace(hexCode, builder.toString());
             matcher = pattern.matcher(s);
         }
-        return ChatColor.translateAlternateColorCodes('&', s);
+        return PlaceholderAPI.setPlaceholders(null, ChatColor.translateAlternateColorCodes('&', s));
     }
 
     public List<String> colorized(List<String> list){
