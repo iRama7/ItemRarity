@@ -93,7 +93,7 @@ public final class ItemRarity extends JavaPlugin {
 
 
     public void reloadRarities() throws IOException {
-        rarityFile = YamlConfiguration.loadConfiguration(rarityFileFile);
+        createRarityFile();
     }
 
     public void registerEvents(){
