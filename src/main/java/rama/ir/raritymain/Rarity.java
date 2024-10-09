@@ -1,8 +1,6 @@
 package rama.ir.raritymain;
 
 import dev.lone.itemsadder.api.CustomStack;
-import io.th0rgal.oraxen.api.OraxenItems;
-import io.th0rgal.oraxen.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +24,6 @@ public class Rarity {
     private List<Potion> potionItems = new ArrayList<>();
     private List<CustomModelDataItem> customModelDataItems = new ArrayList<>();
     private List<CustomStack> customStacks = new ArrayList<>();
-    private List<ItemBuilder> oraxenItems = new ArrayList<>();
 
     private final ItemRarity ir;
 
@@ -92,17 +89,6 @@ public class Rarity {
             if (CustomStack.byItemStack(item) != null) {
                 for (CustomStack customStack : customStacks) {
                     if (customStack.getId().equals(CustomStack.byItemStack(item).getId())) {
-                        b = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if(!oraxenItems.isEmpty()) {
-            if (OraxenItems.getIdByItem(item) != null) {
-                for (ItemBuilder oraxenItem : oraxenItems) {
-                    if (OraxenItems.getIdByItem(oraxenItem).equals(OraxenItems.getIdByItem(item))) {
                         b = true;
                         break;
                     }
@@ -176,16 +162,6 @@ public class Rarity {
 
     public void addCustomModelDataItem(CustomModelDataItem item){
         customModelDataItems.add(item);
-    }
-
-    public void addOraxenItem(String namespace){
-        ItemBuilder customItem = OraxenItems.getItemById(namespace);
-        if(customItem != null){
-            oraxenItems.add(customItem);
-            ir.logger("&cFound item &e" + namespace + " &cin Oraxen.", false);
-        }else{
-            ir.logger("&cDidn't found item &e" + namespace + " &cin Oraxen.", false);
-        }
     }
 
     public void addItemsAdderItem(String namespace){
