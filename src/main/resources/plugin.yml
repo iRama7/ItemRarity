@@ -6,6 +6,7 @@ depend: [ NBTAPI ]
 softdepend:
   - ItemRarityGlow
   - ItemsAdder
+  - Oraxen
   - PlaceholderAPI
 authors: [ ImRama ]
 description: Adds rarity to your items.

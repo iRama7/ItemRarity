@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import rama.ir.api.ApplyRarityEvent;
 import rama.ir.raritymain.RarityMain;
 import rama.ir.util.ItemsAdderEvent;
+import rama.ir.util.OraxenEvent;
 import rama.ir.util.Util;
 
 import java.io.File;
@@ -27,6 +28,8 @@ public final class ItemRarity extends JavaPlugin {
 
     private boolean itemsAdderHook;
 
+    private boolean OraxenHook;
+
     @Override
     public void onEnable() {
         new UpdateChecker(this, 105483).getVersion(version -> {
@@ -42,6 +45,7 @@ public final class ItemRarity extends JavaPlugin {
         this.saveDefaultConfig();
         initializeRarityMain();
         hookItemsAdder();
+        hookOraxen();
         registerCommands();
         util = new Util(this);
         registerEvents();
@@ -54,6 +58,21 @@ public final class ItemRarity extends JavaPlugin {
 
     public boolean isItemsAdderHook(){
         return itemsAdderHook;
+    }
+
+    public boolean isOraxenHook(){
+        return OraxenHook;
+    }
+
+    public void hookOraxen(){
+        if(Bukkit.getPluginManager().getPlugin("Oraxen") != null){
+            logger("&eEnabling &dOraxen &ehook!", false);
+            getServer().getPluginManager().registerEvents(new OraxenEvent(rarityMain), this);
+            OraxenHook = true;
+        }else{
+            logger("&dOraxen &enot found.", false);
+            OraxenHook = false;
+        }
     }
 
     public void hookItemsAdder(){

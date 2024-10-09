@@ -152,6 +152,7 @@ public class RarityMain {
             loadCustom(rarityFile.getConfigurationSection("Items.Custom").getKeys(false));
         }
         ir.logger("&eLoaded &a" + count + " &erarities", false);
+        loadOraxenItems(); // After reloading oraxen's item will also be deleted, causing you to have to reload it.
     }
 
     public void loadItems(Rarity rarity){
@@ -182,7 +183,22 @@ public class RarityMain {
             if(s.split(":").length == 2 && util.isNumber(s.split(":")[1])){ //Custom model data
                 rarity.addCustomModelDataItem(new CustomModelDataItem(s));
             }
+        }
+    }
 
+    public void loadOraxenItems() {
+        Bukkit.getLogger().info("Loading Oraxen items");
+        for(Rarity rarity : rarityList) {
+            for (String s : rarityFile.getStringList("Items." + rarity.getIdentifier() + ".list")) {
+                if (s.split(":")[0].equals("ORAXEN")) {
+                    if (!ir.isOraxenHook()) {
+                        ir.logger("&cSkipping &7" + s + " &cbecause &eOraxen &chook is disabled.", false);
+                        continue;
+                    }
+                    rarity.addOraxenItem(s.split(":")[1]);
+                }
+
+            }
         }
     }
 
