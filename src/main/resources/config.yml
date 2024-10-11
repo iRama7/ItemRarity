@@ -7,4 +7,8 @@ Config:
     - "&7Rarity: {rarity-prefix}"
   enable-glow: true
   inventory-blacklist:
-    - "Example inventory title" #<- Inventory title here
+    types:
+      - "MERCHANT" #types of inventories to exclude from rarity to be applied https://jd.papermc.io/paper/1.21.1/org/bukkit/event/inventory/InventoryType.html
+      - "WORKBENCH"
+    titles:
+      - "Example inventory title" #<- Inventory title to exclude from rarity to be applied

@@ -2,11 +2,12 @@ name: ItemRarity
 version: '${project.version}'
 main: rama.ir.ItemRarity
 api-version: 1.13
-depend: [ NBTAPI ]
+depend:
+  - NBTAPI
+  - PlaceholderAPI
 softdepend:
   - ItemRarityGlow
   - ItemsAdder
-  - PlaceholderAPI
 authors: [ ImRama ]
 description: Adds rarity to your items.
 commands:

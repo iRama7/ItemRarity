@@ -1,5 +1,6 @@
 package rama.ir.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,9 +24,11 @@ public class Util implements Listener {
     }
 
 
+
     @EventHandler
-    public void CraftingTableListener(InventoryOpenEvent e){
-        if(e.getInventory().getType().equals(InventoryType.WORKBENCH)){
+    public void inventoryOpenEvent(InventoryOpenEvent e){
+        if(isBlacklisted(e.getView().getTitle()) || isBlacklisted(e.getInventory().getType())){
+            Bukkit.getLogger().info(e.getView().getTitle());
             excludedPlayers.add((Player) e.getPlayer());
             for(ItemStack item : e.getPlayer().getInventory().getContents().clone()){
                 if(item != null && !item.getType().equals(Material.AIR) && main.getRarityMain().getRarity(item) != null){
@@ -36,21 +39,9 @@ public class Util implements Listener {
     }
 
     @EventHandler
-    public void inventoryOpenEvent(InventoryOpenEvent e){
-        if(isBlacklisted(e.getView().getTitle())){
-            for(ItemStack item : e.getPlayer().getInventory().getContents().clone()){
-                if(item != null && !item.getType().equals(Material.AIR) && main.getRarityMain().getRarity(item) != null){
-                    main.getRarityMain().removeRarity(item);
-                }
-            }
-        }
-    }
-
-    @EventHandler
     public void inventoryCloseEvent(InventoryCloseEvent e){
-        if(e.getInventory().getType().equals(InventoryType.WORKBENCH)){
-            excludedPlayers.remove((Player) e.getPlayer());
-        }
+        Player p = (Player) e.getPlayer();
+        excludedPlayers.remove(p);
     }
 
     public Boolean isPlayerExcluded(Player p){
@@ -76,12 +67,32 @@ public class Util implements Listener {
     }
 
     public boolean isBlacklisted(String title){
-        for(String t : main.getConfig().getStringList("Config.inventory-blacklist")){
+        for(String t : main.getConfig().getStringList("Config.inventory-blacklist.titles")){
             if(title.equals(t)){
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isBlacklisted(InventoryType type){
+
+        boolean b = false;
+
+        for(String stringEnum : main.getConfig().getStringList("Config.inventory-blacklist.types")){
+            try{
+                InventoryType inventoryType = InventoryType.valueOf(stringEnum);
+
+                if(inventoryType.equals(type)){
+                    b = true;
+                }
+            }catch (IllegalArgumentException e){
+                main.logger(e.getMessage(), false);
+            }
+        }
+
+        return b;
+
     }
 
 
