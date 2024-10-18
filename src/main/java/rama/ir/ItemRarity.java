@@ -21,6 +21,8 @@ public final class ItemRarity extends JavaPlugin {
     private File rarityFileFile;
     private FileConfiguration rarityFile;
 
+    private boolean irgHook;
+
     private RarityMain rarityMain;
 
     private Util util;
@@ -42,6 +44,7 @@ public final class ItemRarity extends JavaPlugin {
         this.saveDefaultConfig();
         initializeRarityMain();
         hookItemsAdder();
+        initIRGHook();
         registerCommands();
         util = new Util(this);
         registerEvents();
@@ -65,6 +68,18 @@ public final class ItemRarity extends JavaPlugin {
             logger("&dItemsAdder &enot found.", false);
             itemsAdderHook = false;
         }
+    }
+
+    private void initIRGHook() {
+        if(Bukkit.getPluginManager().getPlugin("ItemRarityGlow") != null){
+            logger("&eEnabling &dItemRarityGlow &ehook!", false);
+            irgHook = true;
+        }else{
+            logger("&dItemRarityGlow &enot found.", false);
+            irgHook = false;
+        }
+
+
     }
 
     public void triggerApplyRarityEvent(ApplyRarityEvent event){
@@ -137,6 +152,9 @@ public final class ItemRarity extends JavaPlugin {
         return rarityMain;
     }
 
+    public boolean isIrgHook() {
+        return irgHook;
+    }
 
     public Util getUtil() {
         return util;
@@ -145,6 +163,8 @@ public final class ItemRarity extends JavaPlugin {
     public void debug(String m){
 
     }
+
+
 
 
 

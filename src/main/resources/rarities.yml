@@ -3,7 +3,7 @@ Rarities:
       identifier: Common
       name: '&f&lCOMMON' #FFFFFF for hex color codes
       weight: 1
-      glow: 'WHITE'
+      glow: 'WHITE' #only with ItemRarityGlow installed
     2:
       identifier: Uncommon
       weight: 2

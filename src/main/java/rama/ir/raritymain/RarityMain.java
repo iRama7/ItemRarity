@@ -41,8 +41,8 @@ public class RarityMain {
     private final List<Rarity> rarityList = new ArrayList<>();
     private final FileConfiguration rarityFile;
     private final ItemRarity ir;
-    private static final Rarity nullRarity = new Rarity("null", "", 0, null);
-    private static final Rarity blacklistRarity = new Rarity("Blacklist", "", 0, null);
+    private static final Rarity nullRarity = new Rarity("null", "", 0, "WHITE", null);
+    private static final Rarity blacklistRarity = new Rarity("Blacklist", "", 0, "WHITE", null);
     private Boolean updating = false;
     private final Util util;
 
@@ -55,7 +55,7 @@ public class RarityMain {
             removeRarity(item);
         }
 
-        Rarity mostWeightRarity = new Rarity(null, null, 0, ir);
+        Rarity mostWeightRarity = new Rarity(null, null, 0, "", ir);
 
         for(Rarity r : rarityList){
             if(r.contains(item) && r.getWeight() > mostWeightRarity.getWeight()){
@@ -101,6 +101,10 @@ public class RarityMain {
 
         NBT.addNBT(rarity.getIdentifier(), item);
 
+        if(ir.isIrgHook()){
+            NBT.addIRGNBT(rarity.getGlow(), item);
+        }
+
         if(!rarity.getIdentifier().equals("Blacklist") && rarity.getIdentifier() != null) {
 
             ItemMeta itemMeta = item.getItemMeta();
@@ -142,8 +146,9 @@ public class RarityMain {
         for(String i : rarityFile.getConfigurationSection("Rarities").getKeys(false)){
             String identifier = rarityFile.getString("Rarities." + i + ".identifier");
             String name = rarityFile.getString("Rarities." + i + ".name");
+            String glow = rarityFile.getString("Rarities." + i + ".glow");
             int weight = rarityFile.getInt("Rarities." + i + ".weight");
-            Rarity rarity = new Rarity(identifier, name, weight, ir);
+            Rarity rarity = new Rarity(identifier, name, weight, glow, ir);
             rarityList.add(rarity);
             loadItems(rarity);
             count++;

@@ -24,17 +24,19 @@ public class Rarity {
     private List<Potion> potionItems = new ArrayList<>();
     private List<CustomModelDataItem> customModelDataItems = new ArrayList<>();
     private List<CustomStack> customStacks = new ArrayList<>();
+    private final String glow;
 
 
 
 
     private final ItemRarity ir;
 
-    public Rarity(String identifier, String name, int weight, ItemRarity ir){
+    public Rarity(String identifier, String name, int weight, String glow, ItemRarity ir){
         this.ir = ir;
         this.identifier = identifier;
         this.name = name;
         this.weight = weight;
+        this.glow = glow;
     }
 
     public String getIdentifier(){
@@ -47,6 +49,10 @@ public class Rarity {
 
     public int getWeight(){
         return weight;
+    }
+
+    public String getGlow() {
+        return glow;
     }
 
     public boolean contains(ItemStack item){

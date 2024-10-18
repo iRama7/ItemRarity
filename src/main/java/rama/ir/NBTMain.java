@@ -20,6 +20,12 @@ public class NBTMain {
         item.setItemMeta(nbtItem.getItem().getItemMeta());
     }
 
+    public void addIRGNBT(String glow, ItemStack item){
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString("Glow", glow);
+        item.setItemMeta(nbtItem.getItem().getItemMeta());
+    }
+
     public String getNBT(ItemStack item){
         NBTItem nbtItem = new NBTItem(item);
         return nbtItem.getString(key);
