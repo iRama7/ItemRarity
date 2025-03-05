@@ -34,7 +34,10 @@ public class RarityMain {
         this.ir = ir;
         rarityList.add(nullRarity);
         util = new Util(ir);
+        blacklistItems = new ArrayList<>();
     }
+
+    private List<ItemStack> blacklistItems;
 
     private final Plugin plugin;
     private final NBTMain NBT = new NBTMain();
@@ -96,7 +99,12 @@ public class RarityMain {
     }
 
 
-    public void setRarity(ItemStack item, Rarity rarity){ //TODO
+    public void setRarity(ItemStack item, Rarity rarity){
+
+        if(rarity.getIdentifier().equals("Blacklist")){
+            blacklistItems.add(item);
+            return;
+        }
 
 
         NBT.addNBT(rarity.getIdentifier(), item);
@@ -134,7 +142,7 @@ public class RarityMain {
     }
 
     public void queryItem(ItemStack item){
-        if(item == null){
+        if(item == null || blacklistItems.contains(item)){
             return;
         }
         Rarity r = getMostWeightRarity(item);
